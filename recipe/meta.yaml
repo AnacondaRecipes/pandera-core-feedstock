@@ -10,25 +10,30 @@ source:
   sha256: 87b3943c682e4d7bf05749ce98cf1f08e59594b97f218a8b9981a50de863222e
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . -vv
+  skip: True  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
 
 requirements:
   host:
-    - python >=3.7
+    - python
     - pip
+    - setuptools
+    - wheel
   run:
-    - python >=3.7
+    - python
     - multimethod
-    - numpy
-    - pandas
-    - typing_extensions
+    - numpy >=1.19.0
+    - packaging >=20.0
+    - pandas >=1.2.0
+    - pydantic <2.0.0
     - typeguard >=3.0.2
+    - typing_extensions >=3.7.4.3  # [py<38]
     - typing_inspect >=0.6.0
     - wrapt
-    - packaging
-    - pydantic <2.0.0
+    # The downstream package 'recommenders' depends on extras_require "strategies": ["hypothesis >= 5.41.1"],
+    # see https://github.com/microsoft/recommenders/blob/1.1.1/setup.py#L50
+    - hypothesis >=5.41.1
 
 test:
   imports:
